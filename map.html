@@ -23,9 +23,9 @@
         }).addTo(map);
 
         var heat = L.heatLayer(heatLayerData, {
-            radius: getRadius(map.getZoom()),  
-            blur: 15,    
-            max: 1.0     
+            radius: getRadius(map.getZoom()),
+            blur: 15,
+            max: 1.0
         }).addTo(map);
 
         map.on('zoomend', function() {
@@ -33,15 +33,12 @@
         });
 
         function getRadius(zoom) {
-            // Return a radius based on the current zoom level
-            // You can adjust the values and formula as needed
-            switch (zoom) {
-                case 13: return 50;
-                case 12: return 40;
-                case 11: return 30;
-                case 10: return 20;
-                default: return 15;
+            if (zoom === 2) {
+                return 20;
             }
+            if (zoom < 6) return 25;
+            if (zoom < 13) return 20;
+            return 15;
         }
     </script>
 </body>
