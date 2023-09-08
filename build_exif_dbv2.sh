@@ -8,7 +8,6 @@ if [[ -z "$DIRECTORY" || -z "$DATABASE_FILE" ]]; then
     exit 1
 fi
 
-# Ensure exiftool and parallel are installed
 if ! command -v exiftool &> /dev/null; then
     echo "Error: exiftool not found. Please install it."
     exit 1
