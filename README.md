@@ -1,6 +1,6 @@
 # exif-database
 
-A bash script to build a sqlite database of EXIF information in directory.
+A bash script to build a sqlite database of EXIF information in a directory.
 
 ## Pre-requisites:
 
