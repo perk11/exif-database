@@ -1,6 +1,6 @@
 # exif-database
 
-A bash script to build a sqlite database of all EXIF information in directory.
+A bash script to build a sqlite database of EXIF information in directory.
 
 ## Pre-requisites:
 
@@ -11,7 +11,7 @@ exiftool, jq, parallel, sqlite3
 	./build_exif_dbv2.sh <directory_with_photos> <output_db_file>
 
 The script will try to use all CPU cores and will display a progressbar with the name of the file currently being processed.
-It will try to read all the files, everything recognized by exiftool is going to get indexed.
+It will try to read all the files recursively, everything recognized by exiftool is going to get indexed.
 
 If ran again with the same arguments, it will skip the files already processed, allowing to resume it if it got interrupted and also only index new files.
 
