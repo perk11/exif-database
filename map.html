@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Heatmap</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+</head>
+<body>
+    <div id="map" style="height: 100vh; width: 100vw;"></div>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+    <script src="./map-data.js"></script>
+    <script>
+        if (typeof heatLayerData === 'undefined') {
+            alert ("Failed to load map-data.js, please run map.sh first!");
+        }
+        var map = L.map('map').setView([0,0], 2);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        var heat = L.heatLayer(heatLayerData, {
+            radius: getRadius(map.getZoom()),  
+            blur: 15,    
+            max: 1.0     
+        }).addTo(map);
+
+        map.on('zoomend', function() {
+            heat.setOptions({ radius: getRadius(map.getZoom()) });
+        });
+
+        function getRadius(zoom) {
+            // Return a radius based on the current zoom level
+            // You can adjust the values and formula as needed
+            switch (zoom) {
+                case 13: return 50;
+                case 12: return 40;
+                case 11: return 30;
+                case 10: return 20;
+                default: return 15;
+            }
+        }
+    </script>
+</body>
+</html>

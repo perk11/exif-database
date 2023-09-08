@@ -1,6 +1,6 @@
 # exif-database
 
-A bash script to build a sqlite database of EXIF information in a directory.
+A bash script to build a sqlite database of all EXIF information in directory.
 
 ## Pre-requisites:
 
@@ -17,7 +17,16 @@ If ran again with the same arguments, it will skip the files already processed, 
 
 DO NOT TRY TO READ OR WRITE FROM THE DATABASE WHILE THE SCRIPT IS RUNNING. This might cause sqlite to error out and some records will fail to INSERT.
 
-# Why
+# Generating a map
+
+Once the database is generated, you can use
+
+./map.sh
+
+to generate a heatmap of all the files based on GPS Coordinates. The GPS coordinates will be saved to map-data.js.
+To view them on a map, open map.html.
+
+# Other uses
 
 This allows to fairly quickly search photos by exif information. For example, find all photos and videos made on Apple devices:
 
