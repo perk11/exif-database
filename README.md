@@ -21,10 +21,10 @@ DO NOT TRY TO READ OR WRITE FROM THE DATABASE WHILE THE SCRIPT IS RUNNING. This 
 
 Once the database is generated, you can use
 
-./map.sh
+	./map.sh <db_file>
 
 to generate a heatmap of all the files based on GPS Coordinates. The GPS coordinates will be saved to map-data.js.
-To view them on a map, open map.html.
+To view them on a map, open `map.html` in any browser.
 
 # Other uses
 
