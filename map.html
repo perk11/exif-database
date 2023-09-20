@@ -25,7 +25,8 @@
         var heat = L.heatLayer(heatLayerData, {
             radius: getRadius(map.getZoom()),
             blur: 15,
-            max: 1.0
+            max: 1.0,
+            minOpacity: 0.3
         }).addTo(map);
 
         map.on('zoomend', function() {
