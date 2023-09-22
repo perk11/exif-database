@@ -49,12 +49,18 @@ process_file() {
 
 export -f process_file
 
-# If existing_files is empty, process all files. Otherwise, exclude existing ones.
-if [ -z "$existing_files" ]; then
-    sqlite3 "$DATABASE_FILE" < <(find "$DIRECTORY" -type f | parallel --bar process_file {})
-else
-    sqlite3 "$DATABASE_FILE" < <(find "$DIRECTORY" -type f | grep -vFf "$tempfile" | parallel --bar process_file {})
-fi
+chunk_size=100
+
+{
+    echo "BEGIN TRANSACTION;"
+    # If existing_files is empty, process all files. Otherwise, exclude existing ones.
+    find "$DIRECTORY" -type f | if [ -z "$existing_files" ]; then
+        cat
+    else
+        grep -vFf "$tempfile"
+    fi | parallel --bar process_file {} | awk -v size="$chunk_size" 'NR % size == 0 {print "COMMIT; BEGIN TRANSACTION;"} 1'
+    echo "COMMIT;"
+} | sqlite3 "$DATABASE_FILE"
 
 # Clean up
 rm "$tempfile"
