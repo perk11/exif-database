@@ -39,7 +39,7 @@ echo "$existing_files" > "$tempfile"
 # Define a function for parallel execution
 process_file() {
     file="$1"
-    FULL_PATH=$(realpath "$file")
+    FULL_PATH=$(realpath "$file"  | sed "s/'/''/g")
     JSON_DATA=$(exiftool -json "$file" | jq -c .[0])
     # Escape single quotes for SQLite insertion
     ESCAPED_JSON_DATA=$(echo "$JSON_DATA" | sed "s/'/''/g")
