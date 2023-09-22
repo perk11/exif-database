@@ -25,7 +25,7 @@ if ! command -v sqlite3 &> /dev/null; then
     echo "Error: sqlite not found. Please install it."
     exit 1
 fi
-
+DIRECTORY=$(realpath "$DIRECTORY")
 # Initialize SQLite database
 sqlite3 "$DATABASE_FILE" "CREATE TABLE IF NOT EXISTS exif_data (filename TEXT, exif_json TEXT);"
 
@@ -39,11 +39,12 @@ echo "$existing_files" > "$tempfile"
 # Define a function for parallel execution
 process_file() {
     file="$1"
+    FULL_PATH=$(realpath "$file")
     JSON_DATA=$(exiftool -json "$file" | jq -c .[0])
     # Escape single quotes for SQLite insertion
     ESCAPED_JSON_DATA=$(echo "$JSON_DATA" | sed "s/'/''/g")
     # Return the result as an INSERT statement
-    echo "INSERT INTO exif_data (filename, exif_json) VALUES ('$file', '$ESCAPED_JSON_DATA');"
+    echo "INSERT INTO exif_data (filename, exif_json) VALUES ('$FULL_PATH', '$ESCAPED_JSON_DATA');"
 }
 
 export -f process_file
