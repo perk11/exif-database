@@ -5,6 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+
 </head>
 <body>
     <div id="map" style="height: 100vh; width: 100vw;"></div>
@@ -47,8 +48,10 @@
                     var mediaLatLng = new L.LatLng(media[0], media[1]);
                     if (map.getBounds().contains(mediaLatLng)) {
                         var marker = L.marker([media[0], media[1]]);
-                        marker.bindPopup(`<img src="${media[2]}" style="max-width:200px;">`).openPopup();
+                        const popupContent = generatePopupContent(media[2]);
+                        marker.bindPopup(popupContent, {minWidth: '300'}).openPopup();
                         mediaMarkers.addLayer(marker);
+
                     }
                 });
                 mediaMarkers.addTo(map);
@@ -63,6 +66,53 @@
             // Update heatmap radius on zoom change
             heat.setOptions({radius: getRadius(map.getZoom())});
         });
+        function getFileName(mediaUrl) {
+            return mediaUrl.split('/').pop();
+        }
+
+        function generatePopupContent(mediaUrl) {
+            const fileExtension = mediaUrl.split('.').pop().toLowerCase();
+            const fileName = getFileName(mediaUrl);
+            let mediaContent = "";
+
+            switch (fileExtension) {
+                case 'jpg':
+                case 'jpeg':
+                case 'jxl':
+                case 'avif':
+                case 'png':
+                case 'gif':
+                case 'bmp':
+                case 'webp':
+                    mediaContent = `<img src="${mediaUrl}" alt="${fileName}" style="max-width:300px;">`;
+                    break;
+
+                case 'mp4':
+                case 'webm':
+                case 'ogg':
+                case 'mkv':
+                case 'mov':
+                    mediaContent = `<video controls style="max-width:300px;"><source src="${mediaUrl}" type="video/${fileExtension}"></video>`;
+                    break;
+
+                case 'mp3':
+                case 'wav':
+                case 'aac':
+                case 'flac':
+                case 'oga':
+                case 'opus':
+                    mediaContent = `<audio controls><source src="${mediaUrl}" type="audio/${fileExtension}"></audio>`;
+                    break;
+
+                default:
+                    mediaContent = 'Unsupported media type';
+                    break;
+            }
+
+            return `<a href="${mediaUrl}" target="_blank">${mediaContent}<br><span style="font-size:0.8em">${fileName}</span></a>`;
+        }
+
+
 
         function getRadius(zoom) {
             if (zoom === 2) {
