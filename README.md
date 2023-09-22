@@ -21,10 +21,13 @@ DO NOT TRY TO READ OR WRITE FROM THE DATABASE WHILE THE SCRIPT IS RUNNING. This 
 
 Once the database is generated, you can use
 
-	./map.sh <db_file>
+	./map.sh [--photos-at-max-zoom] <db_file>
 
 to generate a heatmap of all the files based on GPS Coordinates. The GPS coordinates will be saved to map-data.js.
 To view them on a map, open `map.html` in any browser.
+
+If --display-at-max-zoom option is used, at max zoom heatmap will be replaced with clickable pins allowing you 
+to view the photo. Files need to be accessible by full path. If you built your exif database using a version of this script published before 2023-09-22, you might need to rebuild your database for this to work. 
 
 # Other uses
 

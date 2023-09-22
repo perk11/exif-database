@@ -10,12 +10,14 @@ WITH ExtractedData AS (
         CAST(SUBSTR(Longitude, 1, INSTR(Longitude, ' deg') - 1) AS FLOAT) AS LonDeg,
         CAST(SUBSTR(Longitude, INSTR(Longitude, ' deg ') + 5, INSTR(Longitude, '''') - INSTR(Longitude, ' deg ') - 5) AS FLOAT) AS LonMin,
         CAST(SUBSTR(Longitude, INSTR(Longitude, ''' ') + 2, INSTR(Longitude, '"') - INSTR(Longitude, ''' ') - 2) AS FLOAT) AS LonSec,
-        SUBSTR(Longitude, -1) AS LonHemisphere
+        SUBSTR(Longitude, -1) AS LonHemisphere,
+        filename
 
     FROM (
         SELECT
             json_extract(exif_json, '$.GPSLatitude') AS Latitude,
-            json_extract(exif_json, '$.GPSLongitude') AS Longitude
+            json_extract(exif_json, '$.GPSLongitude') AS Longitude,
+            filename
         FROM exif_data
     )
     WHERE Latitude IS NOT NULL AND Longitude IS NOT NULL
@@ -24,6 +26,7 @@ WITH ExtractedData AS (
 SELECT
         '[' ||
         CASE WHEN LatHemisphere = 'S' THEN '-' ELSE '' END || (LatDeg + LatMin/60 + LatSec/3600) || ',' ||
-        CASE WHEN LonHemisphere = 'W' THEN '-' ELSE '' END || (LonDeg + LonMin/60 + LonSec/3600) || ',' || '1' ||
+        CASE WHEN LonHemisphere = 'W' THEN '-' ELSE '' END || (LonDeg + LonMin/60 + LonSec/3600) ||
+        CASE WHEN @includeFileName = 1 THEN ',''' || filename || '''' ELSE '' END ||
         '],' AS ConvertedCoords
 FROM ExtractedData;
