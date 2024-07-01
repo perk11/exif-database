@@ -31,11 +31,12 @@ def cut_at_repeating_item(input_string):
     seen = set()
 
     for i, item in enumerate(items):
+        item = item.lower()
         if item in seen:
-            return ','.join(items[:i])
+            return ','.join(seen)
         seen.add(item)
 
-    return input_string
+    return input_string.lower()
 
 process_lock = threading.Lock()
 class ServerHandler(http.server.SimpleHTTPRequestHandler):
