@@ -14,7 +14,9 @@ model = AutoModelForCausalLM.from_pretrained(model_id, device_map="cuda", trust_
 processor = AutoProcessor.from_pretrained(model_id, trust_remote_code=True)
 messages = [
     {"role": "user",
-     "content": "<|image_1|>\nList everything in this photo in a comma-separated format for indexing."}
+     "content": "<|image_1|>\n"
+                "Return main things useful for indexing this photo in a comma-separated format. "
+                "Only output the list, nothing else."}
 ]
 generation_args = {
     "max_new_tokens": 512,
@@ -58,14 +60,13 @@ class ServerHandler(http.server.SimpleHTTPRequestHandler):
             self._set_headers()
             self.wfile.write(json.dumps({'error': 'Error: ' + repr(e)}).encode('utf-8'))
             return
+        inputs = processor(prompt, [image], return_tensors="pt").to("cuda:0")
         with process_lock:
-            inputs = processor(prompt, [image], return_tensors="pt").to("cuda:0")
-
             generate_ids = model.generate(**inputs, eos_token_id=processor.tokenizer.eos_token_id, **generation_args)
-            generate_ids = generate_ids[:, inputs['input_ids'].shape[1]:]  # remove input tokens
-            response = processor.batch_decode(generate_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)[0]
+        generate_ids = generate_ids[:, inputs['input_ids'].shape[1]:]  # remove input tokens
+        response = processor.batch_decode(generate_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)[0]
         response = cut_at_repeating_item(response)
-        print("Found " + response)
+        print(image_path +": " + response)
 
         self._set_headers()
         self.wfile.write(json.dumps({'response': response}).encode('utf-8'))
