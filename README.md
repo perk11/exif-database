@@ -1,7 +1,7 @@
 # exif-database
 
 A bash script to build a sqlite database of all EXIF information in directory.
-
+![](doc/database_structure.png)
 ## Pre-requisites:
 
 exiftool, jq, parallel, sqlite3
@@ -18,7 +18,7 @@ If ran again with the same arguments, it will skip the files already processed, 
 DO NOT TRY TO READ OR WRITE FROM THE DATABASE WHILE THE SCRIPT IS RUNNING. This might cause sqlite to error out and some records will fail to INSERT.
 
 # Generating a map
-
+![](doc/map.jpg)
 Once the database is generated, you can use
 
 	./map.sh [--photos-at-max-zoom] <db_file>
@@ -27,7 +27,8 @@ to generate a heatmap of all the files based on GPS Coordinates. The GPS coordin
 To view them on a map, open `map.html` in any browser.
 
 If --display-at-max-zoom option is used, at max zoom heatmap will be replaced with clickable pins allowing you 
-to view the photo. Files need to be accessible by full path. If you built your exif database using a version of this script published before 2023-09-22, you might need to rebuild your database for this to work. 
+to view the photo. Files need to be accessible by the full path in the database for this to work.
+![](doc/map_max_zoom.jpg)
 
 # Other uses
 
@@ -35,7 +36,7 @@ This allows to fairly quickly search photos by exif information. For example, fi
 
     sqlite3 database.db "SELECT filename FROM exif_data WHERE json_extract(exif_json, '$.Make') = 'Apple';"
 
-It also allows to pull interesting statistics on photos, for example here how you can pull number of files by device model taken each year, using EXIF and falling back to modification date if EXIF is not available:
+It also allows to pull interesting statistics on photos, for example here is how you can pull number of files by device model taken each year, using EXIF and falling back to modification date if EXIF is not available:
 
 	sqlite3 database.db "SELECT substr(coalesce(json_extract(exif_json, '$.SubSecDateTimeOriginal'),\
 	       json_extract(exif_json, '$.FileModifyDate')), 1, 4) AS Year,\
