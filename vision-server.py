@@ -15,7 +15,7 @@ processor = AutoProcessor.from_pretrained(model_id, trust_remote_code=True)
 messages = [
     {"role": "user",
      "content": "<|image_1|>\n"
-                "Return main things useful for indexing this photo in a comma-separated format. "
+                "Return main keywords/categories useful for indexing this image in a comma-separated format. "
                 "Only output the list, nothing else."}
 ]
 generation_args = {

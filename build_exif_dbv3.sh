@@ -54,7 +54,7 @@ process_file() {
 
     OBJECTS=$(curl -X POST http://localhost:8000 -H "Content-Type: application/json" -d "{\"image_path\": \"$file\"}"|jq -r .response)
     if [ $? -ne 0 ]; then
-        echo "Error: Failed to read object for file $file." >&2
+        echo "Error: Failed to read objects for file $file." >&2
         exit 1
     fi
     if [ -n "$OBJECTS" ]; then
