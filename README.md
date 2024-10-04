@@ -1,6 +1,6 @@
 # exif-database
 
-A bash script to build a sqlite database of all EXIF information in a directory and a heatmap of the photos/videos based on it.
+A bash script to build a SQLite database of all EXIF information in a directory, a heatmap of the photos/videos based on it, and more.
 
 ## Pre-requisites:
 
