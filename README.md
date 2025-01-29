@@ -40,7 +40,10 @@ Having a database allows to fairly quickly search photos by exif information. Fo
 
 It also allows to pull interesting statistics on photos, for example here is how you can pull number of files by device model taken each year, using EXIF and falling back to modification date if EXIF is not available:
 
+SELECT substr(coalesce(json_extract(exif_json, '$.SubSecDateTimeOriginal'),json_extract(exif_json, '$.DateTimeOriginal'), json_extract(exif_json, '$.FileModifyDate')), 1, 4) AS Year
+
 	sqlite3 database.db "SELECT substr(coalesce(json_extract(exif_json, '$.SubSecDateTimeOriginal'),\
+	       json_extract(exif_json, '$.DateTimeOriginal'),\
 	       json_extract(exif_json, '$.FileModifyDate')), 1, 4) AS Year,\
 	       json_extract(exif_json, '$.Make') ||' ' || json_extract(exif_json, '$.Model') AS Model,\
 	       count(1)\
